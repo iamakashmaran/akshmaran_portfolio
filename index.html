@@ -1318,12 +1318,24 @@
     @media (max-width: 600px) {
       .section { padding: 80px 20px; }
       #intro { padding: calc(var(--nav-h) + 60px) 20px 80px; }
+      .intro-h1 { font-size: clamp(1.75rem, 8vw, 2.25rem); word-break: break-word; }
+      .work-h2 { font-size: clamp(1.5rem, 7vw, 2rem); word-break: break-word; }
       .work-card { padding: 24px; }
       .modal-header { padding: 20px 20px 0; }
       .modal-body { padding: 20px; }
       .hero-thumb { width: 60px; height: 60px; }
-      .mi-strip-items { gap: 14px; }
-      .mi-circle { width: 54px; height: 54px; }
+      .skills-grid { grid-template-columns: 1fr; }
+      .mi-strip-items { 
+        gap: 14px; 
+        overflow-x: auto; 
+        justify-content: flex-start; 
+        padding-bottom: 8px;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      .mi-strip-items::-webkit-scrollbar { display: none; }
+      .dp-grid { grid-template-columns: 1fr; gap: 12px; }
+      .dp-step { padding: 18px 16px; }
       .footer-inner { flex-direction: column; align-items: flex-start; }
       .footer-made { text-align: left; }
     }
@@ -1363,7 +1375,7 @@
         
 
           <h1 id="intro-heading" class="intro-h1 reveal reveal-delay-1">
-            Senior UX Designer · <em>Micro&nbsp;Interactions</em>&nbsp;for Banking &amp; FinTech
+            Senior UX Designer · <em>Micro Interactions</em> for Banking &amp; FinTech
           </h1>
 
           <p class="intro-sub reveal reveal-delay-2">
