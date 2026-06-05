@@ -1,0 +1,2162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Akash Maran — Senior UX Designer</title>
+  <meta name="description" content="Senior UX Designer with 5+ years designing digital banking, FinTech, and enterprise products. Specialized in micro interactions using Rive and interactive prototyping in Figma." />
+  <meta name="author" content="Akash Maran" />
+  <meta property="og:title" content="Akash Maran — Senior UX Designer" />
+  <meta property="og:description" content="Micro Interactions & Motion Design for Banking and FinTech" />
+  <meta property="og:type" content="website" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    /* ============================================
+       DESIGN TOKENS & RESET
+    ============================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:         #08080C;
+      --bg-2:       #0F0F16;
+      --bg-3:       #14141E;
+      --surface:    #1A1A28;
+      --surface-2:  #22223A;
+      --border:     rgba(255,255,255,0.07);
+      --border-2:   rgba(255,255,255,0.12);
+      --text:       #FAFAFA;
+      --text-2:     #A8A8B8;
+      --text-3:     #6B6B80;
+      --accent:     #4F8EF7;
+      --accent-2:   #6BA3F8;
+      --accent-glow:rgba(79,142,247,0.18);
+      --success:    #22C55E;
+      --error:      #EF4444;
+      --warn:       #F59E0B;
+      --radius:     16px;
+      --radius-sm:  10px;
+      --radius-xs:  6px;
+      --shadow-sm:  0 2px 12px rgba(0,0,0,0.4);
+      --shadow-md:  0 8px 32px rgba(0,0,0,0.5);
+      --shadow-lg:  0 20px 60px rgba(0,0,0,0.6);
+      --shadow-accent: 0 8px 32px rgba(79,142,247,0.2);
+      --nav-h:      64px;
+      --transition: 0.3s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    html { scroll-behavior: smooth; font-size: 16px; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', system-ui, sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    img { display: block; max-width: 100%; }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* ============================================
+       REDUCED MOTION
+    ============================================ */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* ============================================
+       SCROLLBAR
+    ============================================ */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--surface-2); border-radius: 2px; }
+
+    /* ============================================
+       FOCUS STATES
+    ============================================ */
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+      border-radius: var(--radius-xs);
+    }
+
+    /* ============================================
+       NAVIGATION
+    ============================================ */
+    #nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--nav-h);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      padding: 0 clamp(20px, 5vw, 80px);
+      background: rgba(8,8,12,0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid transparent;
+      transition: border-color var(--transition), background var(--transition);
+    }
+    #nav.scrolled {
+      border-color: var(--border);
+      background: rgba(8,8,12,0.95);
+    }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      transition: color var(--transition);
+    }
+    .nav-logo span { color: var(--accent); }
+    .nav-logo:hover { color: var(--accent-2); }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-2);
+      padding: 6px 14px;
+      border-radius: 20px;
+      transition: color var(--transition), background var(--transition);
+      letter-spacing: 0.01em;
+    }
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--text);
+      background: var(--surface);
+    }
+    .nav-cta {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--accent) !important;
+      border: 1px solid rgba(79,142,247,0.3) !important;
+      padding: 7px 18px !important;
+      border-radius: 20px !important;
+      transition: background var(--transition), border-color var(--transition), color var(--transition), box-shadow var(--transition) !important;
+    }
+    .nav-cta:hover {
+      background: var(--accent-glow) !important;
+      border-color: var(--accent) !important;
+      box-shadow: var(--shadow-accent) !important;
+    }
+
+    /* Mobile nav */
+    .nav-toggle {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+    }
+    .nav-toggle span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: var(--text-2);
+      border-radius: 2px;
+      transition: transform var(--transition), opacity var(--transition);
+    }
+
+    @media (max-width: 640px) {
+      .nav-toggle { display: flex; }
+      .nav-links {
+        display: none;
+        position: fixed;
+        top: var(--nav-h);
+        left: 0; right: 0;
+        background: var(--bg-2);
+        border-bottom: 1px solid var(--border);
+        flex-direction: column;
+        padding: 16px 24px 24px;
+        gap: 4px;
+      }
+      .nav-links.open { display: flex; }
+      .nav-links a { width: 100%; text-align: center; }
+    }
+
+    /* ============================================
+       SECTION SHARED
+    ============================================ */
+    .section {
+      padding: 120px clamp(20px, 5vw, 80px);
+    }
+    .section-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+
+    /* Scroll reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.7s cubic-bezier(0.4,0,0.2,1),
+                  transform 0.7s cubic-bezier(0.4,0,0.2,1);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: none;
+    }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+    .reveal-delay-5 { transition-delay: 0.5s; }
+
+    /* ============================================
+       SECTION 1 – INTRO
+    ============================================ */
+    #intro {
+      padding-top: calc(var(--nav-h) + 80px);
+      padding-bottom: 100px;
+      padding-left: clamp(20px, 5vw, 80px);
+      padding-right: clamp(20px, 5vw, 80px);
+    }
+    .intro-grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    /* Left — Text */
+    .intro-eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+    .intro-eyebrow-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 8px var(--success);
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+    @keyframes pulse-dot {
+      0%,100% { opacity:1; box-shadow: 0 0 6px var(--success); }
+      50% { opacity:0.6; box-shadow: 0 0 14px var(--success); }
+    }
+    .intro-eyebrow-text {
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: var(--text-3);
+      letter-spacing: 0.04em;
+    }
+
+    .intro-h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2rem, 4vw, 3.25rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      margin-bottom: 20px;
+    }
+    .intro-h1 em {
+      font-style: normal;
+      color: var(--accent);
+    }
+
+    .intro-sub {
+      font-size: clamp(1rem, 1.5vw, 1.125rem);
+      color: var(--text-2);
+      line-height: 1.65;
+      margin-bottom: 24px;
+      font-style: italic;
+      font-weight: 300;
+    }
+
+    .intro-bio {
+      font-size: 0.9375rem;
+      color: var(--text-2);
+      line-height: 1.75;
+      margin-bottom: 32px;
+    }
+
+    /* Pills */
+    .intro-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 40px;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--text-2);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 5px 12px;
+      letter-spacing: 0.02em;
+      transition: background var(--transition), border-color var(--transition), color var(--transition);
+    }
+    .pill:hover {
+      background: var(--surface-2);
+      border-color: var(--border-2);
+      color: var(--text);
+    }
+    .pill-icon { font-size: 0.875rem; }
+
+    /* CTAs */
+    .intro-ctas {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.9375rem;
+      font-weight: 600;
+      border-radius: 40px;
+      border: none;
+      cursor: pointer;
+      transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
+      box-shadow: 0 4px 20px rgba(79,142,247,0.35);
+    }
+    .btn-primary:hover {
+      background: var(--accent-2);
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 8px 32px rgba(79,142,247,0.45);
+    }
+    .btn-primary:active { transform: translateY(0) scale(0.98); }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 24px;
+      background: transparent;
+      color: var(--text-2);
+      font-size: 0.9375rem;
+      font-weight: 500;
+      border-radius: 40px;
+      border: 1px solid var(--border-2);
+      cursor: pointer;
+      transition: color var(--transition), border-color var(--transition), background var(--transition), transform var(--transition);
+    }
+    .btn-secondary:hover {
+      color: var(--text);
+      border-color: var(--text-3);
+      background: var(--surface);
+      transform: translateY(-1px);
+    }
+
+    /* ===== Hero Visual (Right) ===== */
+    .hero-visual {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 520px;
+    }
+
+    /* Central card */
+    .hero-center-card {
+      position: relative;
+      width: 260px;
+      z-index: 5;
+      border-radius: 24px;
+      background: var(--surface);
+      border: 1px solid var(--border-2);
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+    .hero-visual:hover .hero-center-card {
+      transform: scale(1.04) translateY(-6px);
+      box-shadow: 0 32px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(79,142,247,0.2);
+    }
+
+    /* Profile card contents */
+    .hero-profile-card {
+      padding: 28px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+    }
+    .hero-photo-wrap {
+      position: relative;
+      margin-bottom: 18px;
+    }
+    .hero-photo {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      object-fit: cover;
+      object-position: center top;
+      border: 2px solid var(--border-2);
+      display: block;
+    }
+    .hero-photo-ring {
+      position: absolute;
+      inset: -6px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      background: conic-gradient(from 0deg, var(--accent), transparent 60%, var(--accent)) border-box;
+      -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: destination-out;
+      mask-composite: exclude;
+      animation: spin-ring 8s linear infinite;
+    }
+    @keyframes spin-ring {
+      to { transform: rotate(360deg); }
+    }
+    .hero-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px;
+      text-align: center;
+    }
+    .hero-role {
+      font-size: 0.775rem;
+      color: var(--accent);
+      font-weight: 500;
+      margin-bottom: 6px;
+      text-align: center;
+    }
+    .hero-loc {
+      font-size: 0.72rem;
+      color: var(--text-3);
+      margin-bottom: 18px;
+      text-align: center;
+    }
+
+    /* Mini stats in card */
+    .hero-stats {
+      display: flex;
+      gap: 12px;
+      width: 100%;
+    }
+    .hero-stat {
+      flex: 1;
+      background: var(--bg-3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 6px;
+      text-align: center;
+    }
+    .hero-stat-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1;
+      margin-bottom: 3px;
+    }
+    .hero-stat-lbl {
+      font-size: 0.6rem;
+      font-weight: 500;
+      color: var(--text-3);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    /* Floating orbit thumbnails */
+    .hero-thumb {
+      position: absolute;
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: var(--surface);
+      border: 1.5px solid var(--border-2);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 4;
+      overflow: hidden;
+      transition: transform 0.4s cubic-bezier(0.4,0,0.2,1),
+                  box-shadow 0.4s cubic-bezier(0.4,0,0.2,1);
+      cursor: pointer;
+    }
+    .hero-thumb:hover {
+      transform: scale(1.15) !important;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+      z-index: 10;
+    }
+    .hero-visual:hover .hero-thumb-1 { transform: translate(-6px, -6px); }
+    .hero-visual:hover .hero-thumb-2 { transform: translate(6px, -8px); }
+    .hero-visual:hover .hero-thumb-3 { transform: translate(8px, 6px); }
+    .hero-visual:hover .hero-thumb-4 { transform: translate(-4px, 8px); }
+    .hero-visual:hover .hero-thumb-5 { transform: translate(-8px, 2px); }
+
+    .hero-thumb-1 { top: 60px;  left: 10px; }
+    .hero-thumb-2 { top: 30px;  right: 30px; }
+    .hero-thumb-3 { bottom: 90px; right: 0px; }
+    .hero-thumb-4 { bottom: 60px; left: 30px; }
+    .hero-thumb-5 { top: 180px; left: -10px; }
+
+    /* ============================================
+       MICRO INTERACTION ANIMATIONS (CSS demos)
+    ============================================ */
+
+    /* Wallet / Payment */
+    .mi-wallet {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+    }
+    .mi-wallet svg { width: 36px; height: 36px; }
+    .mi-wallet-card {
+      fill: none; stroke: var(--accent); stroke-width: 2;
+      animation: wallet-bounce 2.4s ease-in-out infinite;
+    }
+    @keyframes wallet-bounce {
+      0%,100% { transform: translateY(0); }
+      40% { transform: translateY(-4px); }
+      60% { transform: translateY(-2px); }
+    }
+
+    /* Success */
+    .mi-success {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .mi-success-circle {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      border: 2.5px solid var(--success);
+      display: flex; align-items: center; justify-content: center;
+      animation: success-pop 2s ease-in-out infinite;
+    }
+    .mi-success-check {
+      width: 18px; height: 10px;
+      border-left: 2.5px solid var(--success);
+      border-bottom: 2.5px solid var(--success);
+      transform: rotate(-45deg) translate(2px,-2px);
+      animation: check-draw 2s ease-in-out infinite;
+    }
+    @keyframes success-pop {
+      0%,80%,100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(34,197,94,0); }
+      10% { transform: scale(1.12); }
+      20% { transform: scale(1); }
+      50% { box-shadow: 0 0 0 6px rgba(34,197,94,0.12); }
+    }
+    @keyframes check-draw {
+      0%,10%,100% { opacity: 1; }
+      5% { opacity: 0; }
+    }
+
+    /* Error / Failure */
+    .mi-error {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .mi-error-circle {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      border: 2.5px solid var(--error);
+      display: flex; align-items: center; justify-content: center;
+      animation: error-shake 3s ease-in-out infinite;
+    }
+    .mi-error-x::before, .mi-error-x::after {
+      content: '';
+      position: absolute;
+      width: 16px; height: 2.5px;
+      background: var(--error);
+      border-radius: 2px;
+    }
+    .mi-error-x { position: relative; width: 16px; height: 16px; }
+    .mi-error-x::before { transform: rotate(45deg); top: 7px; left: 0; }
+    .mi-error-x::after  { transform: rotate(-45deg); top: 7px; left: 0; }
+    @keyframes error-shake {
+      0%,90%,100% { transform: translateX(0); }
+      92% { transform: translateX(-4px); }
+      94% { transform: translateX(4px); }
+      96% { transform: translateX(-3px); }
+      98% { transform: translateX(3px); }
+    }
+
+    /* Loader */
+    .mi-loader {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .mi-loader-ring {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      border: 3px solid rgba(79,142,247,0.12);
+      border-top-color: var(--accent);
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Security */
+    .mi-security {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .mi-security svg { width: 34px; height: 34px; }
+    .mi-shield {
+      animation: shield-pulse 2.5s ease-in-out infinite;
+    }
+    @keyframes shield-pulse {
+      0%,100% { filter: drop-shadow(0 0 0px transparent); }
+      50% { filter: drop-shadow(0 0 8px rgba(79,142,247,0.6)); }
+    }
+
+    /* Search */
+    .mi-search {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .mi-search svg { width: 32px; height: 32px; animation: search-bob 2s ease-in-out infinite; }
+    @keyframes search-bob {
+      0%,100% { transform: translate(0,0) rotate(0deg); }
+      30% { transform: translate(2px,-2px) rotate(-5deg); }
+      60% { transform: translate(-1px,1px) rotate(3deg); }
+    }
+
+    /* Fingerprint */
+    .mi-finger {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .mi-finger svg { width: 34px; height: 34px; }
+    .fp-line {
+      animation: fp-scan 2.2s ease-in-out infinite;
+    }
+    @keyframes fp-scan {
+      0% { stroke-dashoffset: 100; opacity: 0; }
+      20%,80% { opacity: 1; stroke-dashoffset: 0; }
+      100% { stroke-dashoffset: -100; opacity: 0; }
+    }
+
+    /* Hourglass */
+    .mi-hour {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .mi-hour svg { width: 32px; height: 32px; }
+    .hg-body { animation: hg-flip 3s ease-in-out infinite; transform-origin: center; }
+    @keyframes hg-flip {
+      0%,40%  { transform: rotate(0deg); }
+      50%,90% { transform: rotate(180deg); }
+      100% { transform: rotate(180deg); }
+    }
+
+    /* Alert / Warning */
+    .mi-alert {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .mi-alert-tri {
+      width: 40px; height: 40px;
+      position: relative;
+      display: flex; align-items: center; justify-content: center;
+      animation: alert-blink 2.8s ease-in-out infinite;
+    }
+    @keyframes alert-blink {
+      0%,100% { filter: drop-shadow(0 0 0 transparent); }
+      50% { filter: drop-shadow(0 0 10px rgba(245,158,11,0.7)); }
+    }
+
+    /* Winner */
+    .mi-winner {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px;
+      animation: winner-bounce 1.8s ease-in-out infinite;
+    }
+    @keyframes winner-bounce {
+      0%,100% { transform: scale(1) rotate(0deg); }
+      20% { transform: scale(1.2) rotate(-5deg); }
+      40% { transform: scale(1.1) rotate(5deg); }
+      60% { transform: scale(1.15) rotate(-3deg); }
+    }
+
+    /* ============================================
+       SKILLS & TOOLS BOX
+    ============================================ */
+    .skills-box {
+      margin-bottom: 32px;
+      background: var(--surface);
+      border: 1px solid var(--border-2);
+      border-radius: var(--radius);
+      padding: 20px 22px;
+      position: relative;
+      overflow: hidden;
+    }
+    .skills-box::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent) 0%, transparent 80%);
+      border-radius: 2px 2px 0 0;
+    }
+    .skills-box-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .skills-box-title {
+      font-size: 0.6875rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+    .skills-box-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      opacity: 0.5;
+    }
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 10px;
+    }
+    .skill-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 12px;
+      background: var(--bg-3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      transition: background var(--transition), border-color var(--transition), transform var(--transition);
+      cursor: default;
+    }
+    .skill-item:hover {
+      background: var(--surface-2);
+      border-color: var(--border-2);
+      transform: translateY(-1px);
+    }
+    .skill-icon {
+      width: 28px; height: 28px;
+      border-radius: 7px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .skill-figma  { background: rgba(162,89,255,0.1); }
+    .skill-rive   { background: rgba(79,142,247,0.1); }
+    .skill-ae     { background: rgba(153,153,255,0.1); }
+    .skill-proto  { background: rgba(34,197,94,0.1); }
+    .skill-ds     { background: rgba(245,158,11,0.1); }
+    .skill-name {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+    .skill-tag {
+      font-size: 0.65rem;
+      color: var(--text-3);
+      line-height: 1.3;
+      display: block;
+      white-space: nowrap;
+    }
+    .skill-text {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    /* ============================================
+       SECTION 2 – WORK
+    ============================================ */
+    #work { background: var(--bg-2); }
+    .work-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 64px;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .work-h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.75rem, 3.5vw, 2.75rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      color: var(--text);
+    }
+    .work-h2 span { color: var(--accent); }
+    .work-count {
+      font-size: 0.8125rem;
+      color: var(--text-3);
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    /* Work Cards */
+    .work-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .work-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 24px;
+      align-items: start;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .work-card-body { min-width: 0; }
+    .work-card-num {
+      font-size: 0.6875rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--text-3);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .work-card-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.1rem, 2vw, 1.4rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      margin-bottom: 10px;
+      line-height: 1.25;
+    }
+    .work-card-context {
+      font-size: 0.9rem;
+      color: var(--text-2);
+      line-height: 1.65;
+      margin-bottom: 14px;
+    }
+    .work-card-motion {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 12px 16px;
+      background: var(--bg-3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+    }
+    .work-card-motion-icon {
+      font-size: 0.875rem;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .work-card-motion-text {
+      font-size: 0.8125rem;
+      color: var(--text-3);
+      line-height: 1.55;
+    }
+    .work-card-motion-label {
+      font-size: 0.6875rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      display: block;
+      margin-bottom: 3px;
+    }
+
+    /* Work card thumbnails */
+    .work-card-thumbs {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+    .wct {
+      width: 80px;
+      height: 80px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-3);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    /* ===== Micro Interaction Set strip ===== */
+    .mi-strip {
+      margin-top: 80px;
+      padding-top: 80px;
+      border-top: 1px solid var(--border);
+    }
+    .mi-strip-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 28px;
+    }
+    .mi-strip-items {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: nowrap;
+    }
+    .mi-placeholder {
+      width: 160px;
+      height: 160px;
+      flex-shrink: 0;
+      border-radius: 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+    .mi-placeholder::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(79,142,247,0.05) 0%, transparent 60%);
+    }
+
+    /* ============================================
+       SECTION 3 – CONTACT
+    ============================================ */
+    #contact { background: var(--bg); }
+    .contact-inner {
+      max-width: 640px;
+    }
+    .contact-h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2rem, 4vw, 3.25rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      margin-bottom: 20px;
+      line-height: 1.1;
+    }
+    .contact-text {
+      font-size: 1.0625rem;
+      color: var(--text-2);
+      line-height: 1.7;
+      margin-bottom: 40px;
+    }
+    .contact-ctas {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+    .btn-email {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 15px 32px;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.9375rem;
+      font-weight: 600;
+      border-radius: 40px;
+      border: none;
+      cursor: pointer;
+      overflow: hidden;
+      position: relative;
+      transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
+      box-shadow: 0 4px 24px rgba(79,142,247,0.35);
+    }
+    .btn-email .icon-wrap {
+      display: inline-flex;
+      align-items: center;
+      transition: transform var(--transition);
+    }
+    .btn-email:hover { background: var(--accent-2); transform: translateY(-2px) scale(1.02); box-shadow: 0 10px 40px rgba(79,142,247,0.45); }
+    .btn-email:hover .icon-wrap { transform: translateX(3px); }
+    .btn-email:active { transform: scale(0.97); }
+
+    .btn-linkedin {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 15px 24px;
+      background: transparent;
+      color: var(--text-2);
+      font-size: 0.9375rem;
+      font-weight: 500;
+      border-radius: 40px;
+      border: 1px solid var(--border-2);
+      cursor: pointer;
+      transition: color var(--transition), border-color var(--transition), background var(--transition), transform var(--transition);
+    }
+    .btn-linkedin:hover {
+      color: #0A66C2;
+      border-color: #0A66C2;
+      background: rgba(10,102,194,0.08);
+      transform: translateY(-1px);
+    }
+
+    .contact-note {
+      font-size: 0.8125rem;
+      color: var(--text-3);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* ============================================
+       FOOTER
+    ============================================ */
+    footer {
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+      padding: 28px clamp(20px, 5vw, 80px);
+    }
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .footer-copy {
+      font-size: 0.8rem;
+      color: var(--text-3);
+      font-weight: 400;
+    }
+    .footer-made {
+      font-size: 0.75rem;
+      color: var(--text-3);
+      text-align: right;
+      line-height: 1.5;
+    }
+
+    /* ============================================
+       MODAL / LIGHTBOX
+    ============================================ */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(8,8,12,0.88);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    .modal-overlay.open {
+      opacity: 1;
+      visibility: visible;
+    }
+    .modal-box {
+      background: var(--surface);
+      border: 1px solid var(--border-2);
+      border-radius: 24px;
+      max-width: 720px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 40px 100px rgba(0,0,0,0.8);
+      transform: translateY(24px) scale(0.97);
+      transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+    }
+    .modal-overlay.open .modal-box {
+      transform: translateY(0) scale(1);
+    }
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 28px 32px 0;
+      gap: 16px;
+    }
+    .modal-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      line-height: 1.2;
+    }
+    .modal-close {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      border: 1px solid var(--border-2);
+      background: var(--bg-3);
+      color: var(--text-3);
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      transition: background var(--transition), color var(--transition), transform var(--transition);
+    }
+    .modal-close:hover {
+      background: var(--error);
+      color: #fff;
+      transform: rotate(90deg);
+    }
+    .modal-body { padding: 24px 32px 32px; }
+    .modal-thumbs {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+    }
+    .modal-thumb {
+      flex: 1;
+      min-width: 140px;
+      height: 160px;
+      border-radius: var(--radius);
+      background: var(--bg-3);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .modal-context {
+      font-size: 0.9375rem;
+      color: var(--text-2);
+      line-height: 1.7;
+      margin-bottom: 16px;
+    }
+    .modal-motion {
+      padding: 16px 20px;
+      background: var(--bg-3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+    }
+    .modal-motion-label {
+      font-size: 0.6875rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 6px;
+      display: block;
+    }
+    .modal-motion-text {
+      font-size: 0.875rem;
+      color: var(--text-2);
+      line-height: 1.6;
+    }
+    .modal-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 20px;
+    }
+    .modal-tag {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--text-3);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 4px 12px;
+    }
+
+    /* ============================================
+       DESIGN PROCESS
+    ============================================ */
+    .design-process {
+      margin-top: 80px;
+      padding-top: 64px;
+      border-top: 1px solid var(--border);
+    }
+    .dp-header {
+      max-width: 560px;
+      margin-bottom: 48px;
+    }
+    .dp-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.5rem, 3vw, 2.25rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      margin: 8px 0 14px;
+      line-height: 1.15;
+    }
+    .dp-sub {
+      font-size: 0.9375rem;
+      color: var(--text-2);
+      line-height: 1.65;
+    }
+    .dp-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+    .dp-step {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: border-color var(--transition), background var(--transition), transform var(--transition);
+    }
+    .dp-step:hover {
+      border-color: var(--border-2);
+      background: var(--surface-2);
+      transform: translateY(-2px);
+    }
+    .dp-step-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .dp-icon {
+      font-size: 1.5rem;
+      line-height: 1;
+    }
+    .dp-num {
+      font-size: 0.6875rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      opacity: 0.6;
+      font-family: 'Syne', sans-serif;
+    }
+    .dp-step-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.01em;
+      margin: 0;
+    }
+    .dp-step-desc {
+      font-size: 0.8125rem;
+      color: var(--text-3);
+      line-height: 1.6;
+      margin: 0;
+    }
+    @media (max-width: 900px) {
+      .dp-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 600px) {
+      .dp-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+      .dp-step { padding: 18px 16px; }
+    }
+
+    /* ============================================
+       RESPONSIVE
+    ============================================ */
+    @media (max-width: 900px) {
+      .intro-grid {
+        grid-template-columns: 1fr;
+        gap: 60px;
+      }
+      .hero-visual { height: 420px; }
+      .hero-center-card { width: 220px; }
+      .hero-thumb-1 { top: 40px; left: 20px; }
+      .hero-thumb-2 { top: 20px; right: 40px; }
+      .hero-thumb-3 { bottom: 60px; right: 10px; }
+      .hero-thumb-4 { bottom: 40px; left: 40px; }
+      .hero-thumb-5 { top: 160px; left: 0px; }
+
+      .work-card {
+        grid-template-columns: 1fr;
+      }
+      .work-card-thumbs {
+        flex-direction: row;
+      }
+      .work-card-arrow { top: 20px; right: 20px; }
+    }
+
+    @media (max-width: 600px) {
+      .section { padding: 80px 20px; }
+      #intro { padding: calc(var(--nav-h) + 60px) 20px 80px; }
+      .work-card { padding: 24px; }
+      .modal-header { padding: 20px 20px 0; }
+      .modal-body { padding: 20px; }
+      .hero-thumb { width: 60px; height: 60px; }
+      .mi-strip-items { gap: 14px; }
+      .mi-circle { width: 54px; height: 54px; }
+      .footer-inner { flex-direction: column; align-items: flex-start; }
+      .footer-made { text-align: left; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==============================
+       NAVIGATION
+  ============================== -->
+  <header>
+    <nav id="nav" role="navigation" aria-label="Main navigation">
+      <div class="nav-inner">
+        <a href="#intro" class="nav-logo" aria-label="Akash Maran – Home">AKASH<span> MARAN<span>.</span>
+        <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="navLinks" aria-label="Toggle menu">
+          <span></span><span></span><span></span>
+        </button>
+        <ul class="nav-links" id="navLinks" role="list">
+          <li><a href="#intro" id="nav-intro" aria-current="page">Intro</a></li>
+          <li><a href="#work" id="nav-work">Work</a></li>
+          <li><a href="#contact" id="nav-contact" class="nav-cta">Contact</a></li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+
+    <!-- ==============================
+         SECTION 1 – INTRO
+    ============================== -->
+    <section id="intro" aria-labelledby="intro-heading">
+      <div class="intro-grid">
+
+        <!-- Left: Text -->
+        <div class="intro-text">
+        
+
+          <h1 id="intro-heading" class="intro-h1 reveal reveal-delay-1">
+            Senior UX Designer · <em>Micro&nbsp;Interactions</em>&nbsp;for Banking &amp; FinTech
+          </h1>
+
+          <p class="intro-sub reveal reveal-delay-2">
+            "I design calm, precise micro interactions that make complex financial flows feel effortless and trustworthy."
+          </p>
+
+          <p class="intro-bio reveal reveal-delay-3">
+            Senior UX Designer with 5+ years of experience in Banking, FinTech, and Enterprise products. Skilled in UX design, interaction design, design systems, and micro interactions using Figma and Rive. Experienced in crafting intuitive digital journeys, payment experiences, and onboarding solutions that enhance usability and user engagement.
+          </p>
+
+          <div class="intro-pills reveal reveal-delay-3" aria-label="Skills and focus areas">
+            <span class="pill"><span class="pill-icon" aria-hidden="true">✦</span>Banking &amp; FinTech</span>
+            <span class="pill"><span class="pill-icon" aria-hidden="true">✦</span>UI/UX Design</span>
+            <span class="pill"><span class="pill-icon" aria-hidden="true">✦</span>Micro Interactions</span>
+            <span class="pill"><span class="pill-icon" aria-hidden="true">✦</span>Motion Design</span>
+            <span class="pill"><span class="pill-icon" aria-hidden="true">✦</span>Design System</span>
+          </div>
+
+          <!-- Skills & Tools Box -->
+          <div class="skills-box reveal reveal-delay-4" aria-label="Skills and tools">
+            <div class="skills-box-header">
+              <span class="skills-box-title">Skills &amp; Tools</span>
+            </div>
+            <div class="skills-grid">
+              <div class="skill-item">
+                <span class="skill-icon skill-figma" aria-hidden="true">
+                <svg viewBox="0 0 54 80" width="8" height="20" xmlns="http://www.w3.org/2000/svg">
+  <path d="M13.3 80c4.1 0 7.3-1.3 9.6-3.8 2.3-2.5 3.5-5.9 3.5-10.1v-12.7h-13c-4.3 0-7.7 1.3-10 3.8-2.3 2.5-3.4 5.9-3.4 10.1 0 4.2 1.2 7.6 3.5 10.1 2.3 2.5 5.7 3.8 9.8 3.8Z" fill="#0ACF83"/>
+  <path d="M0 40c0-4.2 1.2-7.6 3.5-10.1C5.8 27.4 9.1 26.1 13.3 26.1h13v26.7h-13c-4.2 0-7.6-1.3-9.9-3.8C1.2 47.5 0 44.1 0 40Z" fill="#A259FF"/>
+  <path d="M0 13.3C0 9.1 1.2 5.7 3.5 3.2 5.8.7 9.1-.6 13.3-.6h13V26h-13C9.1 26 5.8 24.7 3.5 22.2 1.2 19.7 0 16.3 0 13.3Z" fill="#F24E1E"/>
+  <path d="M26.5 0h13.3c4.2 0 7.5 1.3 9.9 3.8 2.4 2.5 3.6 5.9 3.6 10.1 0 4.2-1.2 7.6-3.6 10.1-2.4 2.5-5.7 3.8-9.9 3.8H26.5V0Z" fill="#FF7262"/>
+  <path d="M53.3 40c0 4.2-1.2 7.6-3.6 10.1-2.4 2.5-5.7 3.8-9.9 3.8-4.2 0-7.5-1.3-9.9-3.8-2.4-2.5-3.6-5.9-3.6-10.1 0-4.2 1.2-7.6 3.6-10.1 2.4-2.5 5.7-3.8 9.9-3.8 4.2 0 7.5 1.3 9.9 3.8 2.4 2.5 3.6 5.9 3.6 10.1Z" fill="#1ABCFE"/>
+</svg>
+                </span>
+                <div class="skill-text">
+                  <span class="skill-name">Figma</span>
+                  <span class="skill-tag">UI Design &amp; Prototype</span>
+                </div>
+              </div>
+              <div class="skill-item">
+                <span class="skill-icon skill-rive" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="20" height="20" rx="5" fill="#000000"/><text x="8" y="16" font-size="12" font-weight="900" fill="#ffffff" font-family="Inter">R</text></svg>
+                </span>
+                <div class="skill-text">
+                  <span class="skill-name">Rive</span>
+                  <span class="skill-tag">Interaction Animation</span>
+                </div>
+              </div>
+              <div class="skill-item">
+                <span class="skill-icon skill-ae" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="20" height="20" rx="5" fill="#1E0A35"/><text x="4" y="17" font-size="12" font-weight="900" fill="#9999FF" font-family="sans-serif">Ae</text></svg>
+                </span>
+                <div class="skill-text">
+                  <span class="skill-name">After Effects</span>
+                  <span class="skill-tag">Motion Design</span>
+                </div>
+              </div>
+              <div class="skill-item">
+                <span class="skill-icon skill-proto" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="2" stroke="#22C55E" stroke-width="1.5"/><rect x="14" y="3" width="7" height="7" rx="2" stroke="#22C55E" stroke-width="1.5"/><rect x="3" y="14" width="7" height="7" rx="2" stroke="#22C55E" stroke-width="1.5"/><path d="M17.5 14v3m0 0v3m0-3h3m-3 0h-3" stroke="#22C55E" stroke-width="1.5" stroke-linecap="round"/></svg>
+                </span>
+                <div class="skill-text">
+                  <span class="skill-name">Prototyping</span>
+                  <span class="skill-tag">User Testing</span>
+                </div>
+              </div>
+              <div class="skill-item">
+                <span class="skill-icon skill-ds" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="5" r="2.5" stroke="#F59E0B" stroke-width="1.5"/><circle cx="5" cy="17" r="2.5" stroke="#F59E0B" stroke-width="1.5"/><circle cx="19" cy="17" r="2.5" stroke="#F59E0B" stroke-width="1.5"/><path d="M12 7.5v4M12 11.5l-5.5 4M12 11.5l5.5 4" stroke="#F59E0B" stroke-width="1.5" stroke-linecap="round"/></svg>
+                </span>
+                <div class="skill-text">
+                  <span class="skill-name">Design System</span>
+                  <span class="skill-tag">Components &amp; Tokens</span>
+                </div>
+              </div>
+              <div class="skill-item">
+                <span class="skill-icon skill-ae" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="20" height="20" rx="5" fill="#001834"/><text x="4" y="17" font-size="12" font-weight="900" fill="#2596be" font-family="sans-serif">Ps</text></svg>
+                </span>
+                <div class="skill-text">
+                  <span class="skill-name">Photoshop</span>
+                  <span class="skill-tag">Image Editing</span>
+                </div>
+              </div>
+              <div class="skill-item">
+                <span class="skill-icon skill-ae" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="20" height="20" rx="5" fill="#330000"/><text x="4" y="17" font-size="12" font-weight="900" fill="#ff9a00" font-family="sans-serif">Ai</text></svg>
+                </span>
+                <div class="skill-text">
+                  <span class="skill-name">Illustrator</span>
+                  <span class="skill-tag">Vector Graphics</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="intro-ctas reveal reveal-delay-5">
+            <a href="#work" class="btn-primary" id="cta-view-work">
+              View Work
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+            <a href="https://drive.google.com/file/d/1UCmi7Op5uosaMurE1CHPIXRy-2zXlQtr/view?usp=drive_link" class="btn-secondary" aria-label="Download Akash Maran's resume (PDF)">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M8 2v8M5 7l3 3 3-3M3 13h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Download Resume
+            </a>
+          </div>
+        </div>
+
+        <!-- Right: Hero Visual -->
+        <div class="hero-visual reveal reveal-delay-2" role="img" aria-label="Hero visual with micro interaction previews">
+
+          <!-- Central profile card -->
+          <div class="hero-center-card">
+            <div class="hero-profile-card">
+              <div class="hero-photo-wrap">
+                <img
+                  src="akash-photo.jpg"
+                  alt="Akash Maran, Senior UX Designer"
+                  class="hero-photo"
+                  width="110" height="110"
+                  loading="eager"
+                />
+                <div class="hero-photo-ring" aria-hidden="true"></div>
+              </div>
+              <div class="hero-name">Akash Maran</div>
+              <div class="hero-role">Senior UX Designer</div>
+              <div class="hero-loc">📍 Bengaluru, India</div>
+              <div class="hero-stats">
+                <div class="hero-stat">
+                  <div class="hero-stat-num">5+</div>
+                  <div class="hero-stat-lbl">Years</div>
+                </div>
+                <div class="hero-stat">
+                  <div class="hero-stat-num">30+</div>
+                  <div class="hero-stat-lbl">Interactions</div>
+                </div>
+                <div class="hero-stat">
+                  <div class="hero-stat-num">3+</div>
+                  <div class="hero-stat-lbl">Banks</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Orbit thumbnails -->
+          <div class="hero-thumb hero-thumb-1" aria-hidden="true" title="Success state">
+            <div class="mi-success">
+              <div class="mi-success-circle">
+                <div class="mi-success-check"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="hero-thumb hero-thumb-2" aria-hidden="true" title="Loader state">
+            <div class="mi-loader">
+              <div class="mi-loader-ring"></div>
+            </div>
+          </div>
+
+          <div class="hero-thumb hero-thumb-3" aria-hidden="true" title="Error state">
+            <div class="mi-error">
+              <div class="mi-error-circle">
+                <div class="mi-error-x"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="hero-thumb hero-thumb-4" aria-hidden="true" title="Security state">
+            <div class="mi-security">
+              <svg viewBox="0 0 24 24" fill="none" class="mi-shield" aria-hidden="true">
+                <path d="M12 2L4 6v6c0 5.5 3.8 10.7 8 12 4.2-1.3 8-6.5 8-12V6l-8-4z" stroke="#4F8EF7" stroke-width="1.5" stroke-linejoin="round"/>
+                <path d="M9 12l2 2 4-4" stroke="#4F8EF7" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
+
+          <div class="hero-thumb hero-thumb-5" aria-hidden="true" title="Search state">
+            <div class="mi-search">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <circle cx="11" cy="11" r="6" stroke="#4F8EF7" stroke-width="1.5"/>
+                <path d="M16 16l3 3" stroke="#4F8EF7" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+
+        </div>
+        <!-- /hero-visual -->
+      </div>
+    </section>
+
+    <!-- ==============================
+         SECTION 2 – WORK
+    ============================== -->
+    <section id="work" class="section" aria-labelledby="work-heading">
+      <div class="section-inner">
+        <div class="work-header">
+          <div>
+            <div class="section-label reveal">Portfolio</div>
+            <h2 id="work-heading" class="work-h2 reveal reveal-delay-1">
+              Selected work –<br><span>interaction &amp; motion</span>
+            </h2>
+          </div>
+          <div class="work-count reveal reveal-delay-2">5 projects · Banking &amp; FinTech</div>
+        </div>
+
+        <div class="work-cards" role="list">
+
+          <!-- Card 1 – UCO Bank -->
+          <article class="work-card reveal" role="listitem" tabindex="0"
+            id="card-1" aria-label="UCO Bank – Core Banking Journeys, click to expand"
+            data-project="0">
+            <div class="work-card-body">
+              <div class="work-card-num">01 · UCO Bank</div>
+              <h3 class="work-card-title">UCO Bank – Core Banking Journeys</h3>
+              <p class="work-card-context">
+                Designed end-to-end experiences for fund transfers, deposits, bill payments, ASBA, mPassbook, onboarding, and pre-login modules for UCO Bank's digital channels.
+              </p>
+              <div class="work-card-motion">
+                <span class="work-card-motion-icon" aria-hidden="true">✦</span>
+                <div>
+                  <span class="work-card-motion-label">Motion Focus</span>
+                  <span class="work-card-motion-text">Built consistent patterns for button feedback, loaders, and success/error states to make high-risk actions like transfers and IPO applications feel safe and transparent.</span>
+                </div>
+              </div>
+            </div>
+            <div class="work-card-thumbs" aria-hidden="true">
+              <div class="wct">
+                <div class="mi-wallet">
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <rect x="2" y="7" width="20" height="14" rx="3" class="mi-wallet-card" stroke="#4F8EF7" stroke-width="1.5"/>
+                    <path d="M2 11h20" stroke="#4F8EF7" stroke-width="1.5"/>
+                    <rect x="15" y="14" width="4" height="3" rx="1" fill="#4F8EF7"/>
+                    <path d="M6 4h12a2 2 0 012 2v1H4V6a2 2 0 012-2z" stroke="#4F8EF7" stroke-width="1.2"/>
+                  </svg>
+                </div>
+              </div>
+              <div class="wct">
+                <div class="mi-success">
+                  <div class="mi-success-circle">
+                    <div class="mi-success-check"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="wct">
+                <div class="mi-error">
+                  <div class="mi-error-circle">
+                    <div class="mi-error-x"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </article>
+
+          <!-- Card 2 – CSC -->
+          <article class="work-card reveal reveal-delay-1" role="listitem" tabindex="0"
+            id="card-2" aria-label="CSC – Mobile Micro Interaction System, click to expand"
+            data-project="1">
+            <div class="work-card-body">
+              <div class="work-card-num">02 · CSC</div>
+              <h3 class="work-card-title">CSC – Mobile Micro Interaction System</h3>
+              <p class="work-card-context">
+                Created engaging micro interactions and motion experiences for CSC mobile apps to improve engagement and feedback.
+              </p>
+              <div class="work-card-motion">
+                <span class="work-card-motion-icon" aria-hidden="true">✦</span>
+                <div>
+                  <span class="work-card-motion-label">Motion Focus</span>
+                  <span class="work-card-motion-text">Developed a reusable set of animated icons for alerts, success, and error states so users always know what just happened.</span>
+                </div>
+              </div>
+            </div>
+            <div class="work-card-thumbs" aria-hidden="true">
+              <div class="wct">
+                <div class="mi-alert">
+                  <svg viewBox="0 0 24 24" fill="none" class="mi-alert-tri" width="36" height="36" aria-hidden="true">
+                    <path d="M12 3L2 20h20L12 3z" stroke="#F59E0B" stroke-width="1.5" stroke-linejoin="round"/>
+                    <path d="M12 10v4M12 17v.5" stroke="#F59E0B" stroke-width="1.5" stroke-linecap="round"/>
+                  </svg>
+                </div>
+              </div>
+              <div class="wct">
+                <div class="mi-winner">🏆</div>
+              </div>
+              <div class="wct">
+                <div class="mi-error">
+                  <div class="mi-error-circle">
+                    <div class="mi-error-x"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </article>
+
+          <!-- Card 3 – Trumia -->
+          <article class="work-card reveal reveal-delay-2" role="listitem" tabindex="0"
+            id="card-3" aria-label="Trumia – Apple Pay & Google Pay Journeys, click to expand"
+            data-project="2">
+            <div class="work-card-body">
+              <div class="work-card-num">03 · Trumia</div>
+              <h3 class="work-card-title">Trumia – Apple Pay &amp; Google Pay Journeys</h3>
+              <p class="work-card-context">
+                Designed Apple Pay and Google Pay integration flows and supported multiple platform enhancements.
+              </p>
+              <div class="work-card-motion">
+                <span class="work-card-motion-icon" aria-hidden="true">✦</span>
+                <div>
+                  <span class="work-card-motion-label">Motion Focus</span>
+                  <span class="work-card-motion-text">Focused on subtle transitions for card selection, tap states, and payment confirmations to keep the experience fast and reassuring.</span>
+                </div>
+              </div>
+            </div>
+            <div class="work-card-thumbs" aria-hidden="true">
+              <div class="wct">
+                <div class="mi-wallet">
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <rect x="2" y="7" width="20" height="14" rx="3" class="mi-wallet-card" stroke="#4F8EF7" stroke-width="1.5"/>
+                    <path d="M2 11h20" stroke="#4F8EF7" stroke-width="1.5"/>
+                    <rect x="15" y="14" width="4" height="3" rx="1" fill="#4F8EF7"/>
+                  </svg>
+                </div>
+              </div>
+              <div class="wct">
+                <div class="mi-success">
+                  <div class="mi-success-circle">
+                    <div class="mi-success-check"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="wct">
+                <div class="mi-hour">
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <g class="hg-body">
+                      <path d="M7 3h10M7 21h10" stroke="#A8A8B8" stroke-width="1.5" stroke-linecap="round"/>
+                      <path d="M8 3c0 5 8 8 8 9s-8 4-8 9M16 3c0 5-8 8-8 9s8 4 8 9" stroke="#A8A8B8" stroke-width="1.5"/>
+                      <path d="M9.5 16.5c.8-1 3-2.5 3-2.5s2.2 1.5 3 2.5" stroke="#4F8EF7" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </g>
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+          </article>
+
+          <!-- Card 4 – IPPB -->
+          <article class="work-card reveal reveal-delay-3" role="listitem" tabindex="0"
+            id="card-4" aria-label="IPPB – Re-KYC & Security Journeys, click to expand"
+            data-project="3">
+            <div class="work-card-body">
+              <div class="work-card-num">04 · IPPB</div>
+              <h3 class="work-card-title">IPPB – Re‑KYC &amp; Security Journeys</h3>
+              <p class="work-card-context">
+                Designed Re‑KYC and onboarding workflows for India Post Payments Bank with an emphasis on clarity and compliance.
+              </p>
+              <div class="work-card-motion">
+                <span class="work-card-motion-icon" aria-hidden="true">✦</span>
+                <div>
+                  <span class="work-card-motion-label">Motion Focus</span>
+                  <span class="work-card-motion-text">Used motion to guide users through verification steps (fingerprint, OTP, document checks) with clear progress and reduced anxiety.</span>
+                </div>
+              </div>
+            </div>
+            <div class="work-card-thumbs" aria-hidden="true">
+              <div class="wct">
+                <div class="mi-finger">
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path class="fp-line" stroke-dasharray="100" stroke-dashoffset="100" d="M12 2C7.03 2 3 6.03 3 11c0 2.38.88 4.56 2.32 6.24" stroke="#4F8EF7" stroke-width="1.5" stroke-linecap="round"/>
+                    <path class="fp-line" stroke-dasharray="100" stroke-dashoffset="100" d="M12 5c-3.31 0-6 2.69-6 6 0 1.5.55 2.87 1.46 3.91" stroke="#4F8EF7" stroke-width="1.3" stroke-linecap="round" style="animation-delay:.2s"/>
+                    <path class="fp-line" stroke-dasharray="100" stroke-dashoffset="100" d="M12 8c-1.66 0-3 1.34-3 3 0 .96.45 1.82 1.15 2.38" stroke="#4F8EF7" stroke-width="1.2" stroke-linecap="round" style="animation-delay:.4s"/>
+                    <path d="M12 11v.01" stroke="#4F8EF7" stroke-width="2" stroke-linecap="round"/>
+                    <path class="fp-line" stroke-dasharray="100" stroke-dashoffset="100" d="M15 11c0 1.66-1.34 3-3 3" stroke="#4F8EF7" stroke-width="1.2" stroke-linecap="round" style="animation-delay:.3s"/>
+                    <path class="fp-line" stroke-dasharray="100" stroke-dashoffset="100" d="M18 11c0 3.31-2.69 6-6 6" stroke="#4F8EF7" stroke-width="1.3" stroke-linecap="round" style="animation-delay:.1s"/>
+                    <path class="fp-line" stroke-dasharray="100" stroke-dashoffset="100" d="M21 11c0 4.97-4.03 9-9 9" stroke="#4F8EF7" stroke-width="1.5" stroke-linecap="round" style="animation-delay:.15s"/>
+                  </svg>
+                </div>
+              </div>
+              <div class="wct">
+                <div class="mi-security">
+                  <svg viewBox="0 0 24 24" fill="none" class="mi-shield" aria-hidden="true">
+                    <path d="M12 2L4 6v6c0 5.5 3.8 10.7 8 12 4.2-1.3 8-6.5 8-12V6l-8-4z" stroke="#4F8EF7" stroke-width="1.5" stroke-linejoin="round"/>
+                    <path d="M9 12l2 2 4-4" stroke="#4F8EF7" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+              </div>
+              <div class="wct">
+                <div class="mi-loader">
+                  <div class="mi-loader-ring"></div>
+                </div>
+              </div>
+            </div>
+
+          </article>
+
+          <!-- Card 5 – DIB Kenya -->
+          <article class="work-card reveal reveal-delay-4" role="listitem" tabindex="0"
+            id="card-5" aria-label="DIB Kenya – M-Pesa & Bulk Transfers, click to expand"
+            data-project="4">
+            <div class="work-card-body">
+              <div class="work-card-num">05 · DIB Kenya</div>
+              <h3 class="work-card-title">DIB Kenya – M‑Pesa &amp; Bulk Transfers</h3>
+              <p class="work-card-context">
+                Supported enhancements for M‑Pesa and Bulk M‑Pesa modules with icon updates and transaction flows.
+              </p>
+              <div class="work-card-motion">
+                <span class="work-card-motion-icon" aria-hidden="true">✦</span>
+                <div>
+                  <span class="work-card-motion-label">Motion Focus</span>
+                  <span class="work-card-motion-text">Refined loading and result states for sending and receiving money, tuned for low-bandwidth scenarios so users never feel stuck.</span>
+                </div>
+              </div>
+            </div>
+            <div class="work-card-thumbs" aria-hidden="true">
+              <div class="wct">
+                <div class="mi-hour">
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <g class="hg-body">
+                      <path d="M7 3h10M7 21h10" stroke="#A8A8B8" stroke-width="1.5" stroke-linecap="round"/>
+                      <path d="M8 3c0 5 8 8 8 9s-8 4-8 9M16 3c0 5-8 8-8 9s8 4 8 9" stroke="#A8A8B8" stroke-width="1.5"/>
+                    </g>
+                  </svg>
+                </div>
+              </div>
+              <div class="wct">
+                <div class="mi-success">
+                  <div class="mi-success-circle">
+                    <div class="mi-success-check"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="wct">
+                <div class="mi-error">
+                  <div class="mi-error-circle">
+                    <div class="mi-error-x"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </article>
+
+        </div>
+        <!-- /work-cards -->
+
+        <!-- ===== Micro Interaction Strip ===== -->
+        <div class="mi-strip reveal">
+          <div class="mi-strip-label">Micro interaction set · Banking &amp; FinTech</div>
+          <div class="mi-strip-items" role="list" aria-label="Micro interaction placeholders">
+            <div class="mi-placeholder" role="listitem"></div>
+            <div class="mi-placeholder" role="listitem"></div>
+            <div class="mi-placeholder" role="listitem"></div>
+            <div class="mi-placeholder" role="listitem"></div>
+            <div class="mi-placeholder" role="listitem"></div>
+            <div class="mi-placeholder" role="listitem"></div>
+            <div class="mi-placeholder" role="listitem"></div>
+            <div class="mi-placeholder" role="listitem"></div>
+          </div>
+        </div>
+
+        <!-- Design Process -->
+        <div class="design-process reveal" id="design-process">
+          <div class="dp-header">
+            <span class="section-label">How I Work</span>
+            <h3 class="dp-title">Design Process</h3>
+            <p class="dp-sub">From ambiguity to a polished, motion-rich product — a systematic, collaborative approach.</p>
+          </div>
+          <div class="dp-grid">
+
+            <div class="dp-step reveal">
+              <div class="dp-step-top">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <span class="dp-num">01</span>
+              </div>
+              <h4 class="dp-step-title">Discovery</h4>
+              <p class="dp-step-desc">Stakeholder interviews, goal alignment, scope definition</p>
+            </div>
+
+            <div class="dp-step reveal reveal-delay-1">
+              <div class="dp-step-top">
+                <i class="fa-solid fa-book"></i>
+                <span class="dp-num">02</span>
+              </div>
+              <h4 class="dp-step-title">Research</h4>
+              <p class="dp-step-desc">User interviews, competitive audit, personas, journey maps</p>
+            </div>
+
+            <div class="dp-step reveal reveal-delay-2">
+              <div class="dp-step-top">
+                <i class="fa-solid fa-pen"></i>
+                <span class="dp-num">03</span>
+              </div>
+              <h4 class="dp-step-title">Wireframing</h4>
+              <p class="dp-step-desc">Information architecture, user flows, lo-fi wireframes</p>
+            </div>
+
+            <div class="dp-step reveal reveal-delay-3">
+              <div class="dp-step-top">
+                <i class="fa-solid fa-bezier-curve"></i>
+                <span class="dp-num">04</span>
+              </div>
+              <h4 class="dp-step-title">Visual Design</h4>
+              <p class="dp-step-desc">Hi-fi UI, design system, component library in Figma</p>
+            </div>
+
+            <div class="dp-step reveal">
+              <div class="dp-step-top">
+                <i class="fa-solid fa-bolt"></i>
+                <span class="dp-num">05</span>
+              </div>
+              <h4 class="dp-step-title">Prototyping</h4>
+              <p class="dp-step-desc">Interactive Figma prototypes, Rive animations, GSAP demos</p>
+            </div>
+
+            <div class="dp-step reveal reveal-delay-1">
+              <div class="dp-step-top">
+                <i class="fa-solid fa-flask"></i>
+                <span class="dp-num">06</span>
+              </div>
+              <h4 class="dp-step-title">Testing</h4>
+              <p class="dp-step-desc">Usability testing, A/B tests, accessibility audits, iteration</p>
+            </div>
+
+            <div class="dp-step reveal reveal-delay-2">
+              <div class="dp-step-top">
+                <span class="dp-icon">🎬</span>
+                <span class="dp-num">07</span>
+              </div>
+              <h4 class="dp-step-title">Motion Design</h4>
+              <p class="dp-step-desc">Micro-interaction specs, motion guidelines, After Effects</p>
+            </div>
+
+            <div class="dp-step reveal reveal-delay-3">
+              <div class="dp-step-top">
+                <i class="fa-solid fa-paper-plane"></i>
+                <span class="dp-num">08</span>
+              </div>
+              <h4 class="dp-step-title">Handoff</h4>
+              <p class="dp-step-desc">Dev-ready specs, motion tokens, component documentation</p>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==============================
+         SECTION 3 – CONTACT
+    ============================== -->
+    <section id="contact" class="section" aria-labelledby="contact-heading">
+      <div class="section-inner">
+        <div class="contact-inner">
+          <div class="section-label reveal">Get in touch</div>
+          <h2 id="contact-heading" class="contact-h2 reveal reveal-delay-1">Let's talk.</h2>
+          <p class="contact-text reveal reveal-delay-2">
+            I'm open to Senior UX / Product Design roles and micro interaction projects in banking, fintech, and product companies. If my work looks like a good fit, let's talk.
+          </p>
+
+          <div class="contact-ctas reveal reveal-delay-3">
+            <a href="mailto:akashmaran@gmail.com" class="btn-email">
+              <span class="icon-wrap" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                  <path d="M2 4.5h14M2 4.5l7 5.5 7-5.5M2 4.5v9a1 1 0 001 1h12a1 1 0 001-1v-9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+              akashmaran@gmail.com
+            </a>
+            <a href="tel:+918056383431" class="btn-linkedin">
+              <span class="icon-wrap" aria-hidden="true" style="margin-right:8px; display:inline-flex; align-items:center;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+              +91 8056383431
+             </a>
+            <a href="https://www.linkedin.com/in/akash-maran-a00075140" target="_blank" rel="noopener noreferrer" class="btn-linkedin" aria-label="Visit Akash Maran on LinkedIn (opens new tab)">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                <rect x="1.5" y="1.5" width="15" height="15" rx="3" stroke="currentColor" stroke-width="1.4"/>
+                <path d="M5 7v6M5 5v.01M8.5 13v-3.5c0-1 .7-1.5 1.5-1.5s1.5.5 1.5 1.5V13M8.5 10v3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+              </svg>
+              LinkedIn
+            </a>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==============================
+       FOOTER
+  ============================== -->
+  <footer role="contentinfo">
+    <div class="footer-inner">
+      <p class="footer-copy">© 2026 Akash Maran</p>
+    </div>
+  </footer>
+
+  <!-- ==============================
+       MODAL
+  ============================== -->
+  <div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modal-title-text" aria-hidden="true">
+    <div class="modal-box" id="modalBox">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modal-title-text"></h2>
+        <button class="modal-close" id="modalClose" aria-label="Close project detail">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-thumbs" id="modalThumbs" aria-hidden="true"></div>
+        <p class="modal-context" id="modalContext"></p>
+        <div class="modal-motion">
+          <span class="modal-motion-label">Motion Focus</span>
+          <span class="modal-motion-text" id="modalMotion"></span>
+        </div>
+        <div class="modal-tags" id="modalTags" aria-label="Project tags"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==============================
+       JAVASCRIPT
+  ============================== -->
+  <script>
+    // ====== Project data ======
+    const projects = [
+      {
+        title: 'UCO Bank – Core Banking Journeys',
+        context: 'Designed end-to-end experiences for fund transfers, deposits, bill payments, ASBA, mPassbook, onboarding, and pre-login modules for UCO Bank\'s digital channels.',
+        motion: 'Built consistent patterns for button feedback, loaders, and success/error states to make high-risk actions like transfers and IPO applications feel safe and transparent.',
+        tags: ['Fund Transfers', 'Bill Payments', 'ASBA', 'mPassbook', 'Onboarding', 'Figma', 'Rive'],
+        thumbTypes: ['wallet', 'success', 'error']
+      },
+      {
+        title: 'CSC – Mobile Micro Interaction System',
+        context: 'Created engaging micro interactions and motion experiences for CSC mobile apps to improve engagement and feedback.',
+        motion: 'Developed a reusable set of animated icons for alerts, success, and error states so users always know what just happened.',
+        tags: ['Micro Interactions', 'Motion Design', 'Design System', 'Rive', 'After Effects'],
+        thumbTypes: ['alert', 'winner', 'error']
+      },
+      {
+        title: 'Trumia – Apple Pay & Google Pay Journeys',
+        context: 'Designed Apple Pay and Google Pay integration flows and supported multiple platform enhancements.',
+        motion: 'Focused on subtle transitions for card selection, tap states, and payment confirmations to keep the experience fast and reassuring.',
+        tags: ['Apple Pay', 'Google Pay', 'Payment UX', 'Tap States', 'Figma'],
+        thumbTypes: ['wallet', 'success', 'hourglass']
+      },
+      {
+        title: 'IPPB – Re‑KYC & Security Journeys',
+        context: 'Designed Re‑KYC and onboarding workflows for India Post Payments Bank with an emphasis on clarity and compliance.',
+        motion: 'Used motion to guide users through verification steps (fingerprint, OTP, document checks) with clear progress and reduced anxiety.',
+        tags: ['Re-KYC', 'Onboarding', 'Verification', 'Security', 'Rive', 'Figma'],
+        thumbTypes: ['fingerprint', 'security', 'loader']
+      },
+      {
+        title: 'DIB Kenya – M‑Pesa & Bulk Transfers',
+        context: 'Supported enhancements for M‑Pesa and Bulk M‑Pesa modules with icon updates and transaction flows.',
+        motion: 'Refined loading and result states for sending and receiving money, tuned for low-bandwidth scenarios so users never feel stuck.',
+        tags: ['M-Pesa', 'Bulk Transfers', 'Loading States', 'Result States', 'Figma'],
+        thumbTypes: ['hourglass', 'success', 'error']
+      }
+    ];
+
+    // ====== Build micro interaction thumbnail HTML ======
+    function buildThumb(type, large = false) {
+      const sz = large ? 120 : 80;
+      const wrapClass = large ? 'modal-thumb' : 'wct';
+
+      const inner = {
+        wallet: `<div class="mi-wallet"><svg viewBox="0 0 24 24" fill="none" width="36" height="36"><rect x="2" y="7" width="20" height="14" rx="3" class="mi-wallet-card" stroke="#4F8EF7" stroke-width="1.5"/><path d="M2 11h20" stroke="#4F8EF7" stroke-width="1.5"/><rect x="15" y="14" width="4" height="3" rx="1" fill="#4F8EF7"/><path d="M6 4h12a2 2 0 012 2v1H4V6a2 2 0 012-2z" stroke="#4F8EF7" stroke-width="1.2"/></svg></div>`,
+        success: `<div class="mi-success"><div class="mi-success-circle"><div class="mi-success-check"></div></div></div>`,
+        error: `<div class="mi-error"><div class="mi-error-circle"><div class="mi-error-x"></div></div></div>`,
+        loader: `<div class="mi-loader"><div class="mi-loader-ring"></div></div>`,
+        security: `<div class="mi-security"><svg viewBox="0 0 24 24" fill="none" class="mi-shield" width="34" height="34"><path d="M12 2L4 6v6c0 5.5 3.8 10.7 8 12 4.2-1.3 8-6.5 8-12V6l-8-4z" stroke="#4F8EF7" stroke-width="1.5" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="#4F8EF7" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>`,
+        fingerprint: `<div class="mi-finger"><svg viewBox="0 0 24 24" fill="none" width="34" height="34"><path class="fp-line" stroke-dasharray="100" stroke-dashoffset="100" d="M12 2C7.03 2 3 6.03 3 11c0 2.38.88 4.56 2.32 6.24" stroke="#4F8EF7" stroke-width="1.5" stroke-linecap="round"/><path class="fp-line" stroke-dasharray="100" stroke-dashoffset="100" d="M12 5c-3.31 0-6 2.69-6 6 0 1.5.55 2.87 1.46 3.91" stroke="#4F8EF7" stroke-width="1.3" stroke-linecap="round" style="animation-delay:.2s"/><path class="fp-line" stroke-dasharray="100" stroke-dashoffset="100" d="M12 8c-1.66 0-3 1.34-3 3 0 .96.45 1.82 1.15 2.38" stroke="#4F8EF7" stroke-width="1.2" stroke-linecap="round" style="animation-delay:.4s"/><path d="M12 11v.01" stroke="#4F8EF7" stroke-width="2" stroke-linecap="round"/><path class="fp-line" stroke-dasharray="100" stroke-dashoffset="100" d="M15 11c0 1.66-1.34 3-3 3" stroke="#4F8EF7" stroke-width="1.2" stroke-linecap="round" style="animation-delay:.3s"/><path class="fp-line" stroke-dasharray="100" stroke-dashoffset="100" d="M18 11c0 3.31-2.69 6-6 6" stroke="#4F8EF7" stroke-width="1.3" stroke-linecap="round" style="animation-delay:.1s"/></svg></div>`,
+        hourglass: `<div class="mi-hour"><svg viewBox="0 0 24 24" fill="none" width="32" height="32"><g class="hg-body"><path d="M7 3h10M7 21h10" stroke="#A8A8B8" stroke-width="1.5" stroke-linecap="round"/><path d="M8 3c0 5 8 8 8 9s-8 4-8 9M16 3c0 5-8 8-8 9s8 4 8 9" stroke="#A8A8B8" stroke-width="1.5"/><path d="M9.5 16.5c.8-1 3-2.5 3-2.5s2.2 1.5 3 2.5" stroke="#4F8EF7" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g></svg></div>`,
+        alert: `<div class="mi-alert"><svg viewBox="0 0 24 24" fill="none" class="mi-alert-tri" width="36" height="36"><path d="M12 3L2 20h20L12 3z" stroke="#F59E0B" stroke-width="1.5" stroke-linejoin="round"/><path d="M12 10v4M12 17v.5" stroke="#F59E0B" stroke-width="1.5" stroke-linecap="round"/></svg></div>`,
+        winner: `<div class="mi-winner">🏆</div>`
+      };
+
+      return `<div class="${wrapClass}">${inner[type] || inner.loader}</div>`;
+    }
+
+    // ====== Modal logic ======
+    const overlay  = document.getElementById('modalOverlay');
+    const modalBox = document.getElementById('modalBox');
+    const closeBtn = document.getElementById('modalClose');
+    let lastFocused = null;
+
+    function openModal(idx) {
+      const p = projects[idx];
+      document.getElementById('modal-title-text').textContent = p.title;
+      document.getElementById('modalContext').textContent = p.context;
+      document.getElementById('modalMotion').textContent = p.motion;
+
+      // Thumbs
+      const thumbsEl = document.getElementById('modalThumbs');
+      thumbsEl.innerHTML = p.thumbTypes.map(t => buildThumb(t, true)).join('');
+
+      // Tags
+      const tagsEl = document.getElementById('modalTags');
+      tagsEl.innerHTML = p.tags.map(t => `<span class="modal-tag">${t}</span>`).join('');
+
+      lastFocused = document.activeElement;
+      overlay.classList.add('open');
+      overlay.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      closeBtn.focus();
+    }
+
+    function closeModal() {
+      overlay.classList.remove('open');
+      overlay.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      if (lastFocused) lastFocused.focus();
+    }
+
+
+    closeBtn.addEventListener('click', closeModal);
+    overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+    // Trap focus in modal
+    modalBox.addEventListener('keydown', e => {
+      if (e.key !== 'Tab') return;
+      const focusable = modalBox.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+      const first = focusable[0], last = focusable[focusable.length - 1];
+      if (e.shiftKey) { if (document.activeElement === first) { e.preventDefault(); last.focus(); } }
+      else { if (document.activeElement === last) { e.preventDefault(); first.focus(); } }
+    });
+
+    // ====== Nav scroll effects ======
+    const nav = document.getElementById('nav');
+    const navLinks = document.querySelectorAll('.nav-links a[id]');
+    const sections = ['intro','work','contact'];
+
+    window.addEventListener('scroll', () => {
+      // Scrolled class
+      nav.classList.toggle('scrolled', window.scrollY > 20);
+
+      // Active link
+      let current = 'intro';
+      sections.forEach(id => {
+        const el = document.getElementById(id);
+        if (el && el.getBoundingClientRect().top <= 80) current = id;
+      });
+      navLinks.forEach(a => {
+        a.classList.toggle('active', a.getAttribute('href') === `#${current}`);
+      });
+    }, { passive: true });
+
+    // ====== Mobile nav toggle ======
+    const toggle = document.getElementById('navToggle');
+    const linksEl = document.getElementById('navLinks');
+    toggle.addEventListener('click', () => {
+      const open = linksEl.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', open);
+    });
+    // Close on link click
+    linksEl.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => {
+        linksEl.classList.remove('open');
+        toggle.setAttribute('aria-expanded', 'false');
+      });
+    });
+
+    // ====== Scroll reveal (IntersectionObserver) ======
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // ====== Smooth scroll for anchor links ======
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', e => {
+        const target = document.querySelector(a.getAttribute('href'));
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>
